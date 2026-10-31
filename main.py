@@ -1,33 +1,62 @@
 
 from model import SDOF
+from simulation import simulate_free_vibration
+from visualization import plot_free_vibration
 
 
 def main():
+
     print("=== SeismoSim ===")
-    print("Single Degree of Freedom System\n")
+    print("Free Vibration Simulation\n")
 
-    mass = float(input("Enter mass (kg): "))
-    stiffness = float(input("Enter stiffness (N/m): "))
-    damping = float(input("Enter damping (Ns/m): "))
+    try:
+        mass = float(input("Mass (kg): "))
+        stiffness = float(input("Stiffness (N/m): "))
+        damping = float(input("Damping (Ns/m): "))
 
-    system = SDOF(mass, stiffness, damping)
+        system = SDOF(mass, stiffness, damping)
+
+        initial_displacement = float(
+            input("Initial displacement (m) [0.01]: ") or 0.01
+        )
+
+        initial_velocity = float(
+            input("Initial velocity (m/s) [0.0]: ") or 0.0
+        )
+
+        duration = float(input("Simulation duration (s) [2.0]: ") or 2.0)
+
+        dt = float(input("Time step (s) [0.001]: ") or 0.001)
+
+        time, displacement, velocity, acceleration = (
+            simulate_free_vibration(
+                system,
+                duration,
+                dt,
+                initial_displacement,
+                initial_velocity
+            )
+        )
+
+    except ValueError as error:
+        print(f"\nError: {error}")
+        return
 
     print("\n=== System Properties ===")
+    print(system)
 
-    print(f"Natural Angular Frequency: {system.natural_angular_frequency():.4f} rad/s")
-    print(f"Natural Period: {system.natural_period():.4f} s")
-    print(f"Critical Damping: {system.critical_damping():.4f} Ns/m")
-    print(f"Damping Ratio: {system.damping_ratio():.4f}")
+    print("=== Simulation Results ===")
+    print(f"Maximum displacement: {max(abs(displacement)):.6f} m")
+    print(f"Maximum velocity: {max(abs(velocity)):.6f} m/s")
+    print(f"Maximum acceleration: {max(abs(acceleration)):.6f} m/s²")
 
-    zeta = system.damping_ratio()
-
-    if zeta < 1:
-        print(f"Damped Angular Frequency: {system.damped_angular_frequency():.4f} rad/s")
-        print(f"Damped Period: {system.damped_period():.4f} s")
-    else:
-        print("Damped frequency: Not applicable for zeta >= 1")
+    plot_free_vibration(
+        time,
+        displacement,
+        velocity,
+        acceleration
+    )
 
 
 if __name__ == "__main__":
     main()
-
