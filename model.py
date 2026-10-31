@@ -36,6 +36,13 @@ class SDOF:
     return self.natural_angular_frequency() * ((1 - (zeta** 2)) ** 0.5)
     
   def __str__(self):
+    if self.damping_ratio() < 1:
+      damped_frequency = f"{self.damped_angular_frequency():.4f} rad/s"
+      damped_period = f"{self.damped_period():.4f} s"
+    else:
+      damped_frequency = "not defined (zeta >= 1)"
+      damped_period = "not defined (zeta >= 1)"
+
     return (
       f"SDOF System\n"
       f"Mass: {self.mass:.4f} kg\n"
@@ -44,7 +51,7 @@ class SDOF:
       f"Natural Angular Frequency: {self.natural_angular_frequency():.4f} rad/s\n"
       f"Natural Period: {self.natural_period():.4f} s\n"
       f"Damping Ratio: {self.damping_ratio():.4f}\n"
-      f"Damped Angular Frequency: {self.damped_angular_frequency():.4f} rad/s\n"
-      f"Damped Period: {self.damped_period():.4f} s\n"
+      f"Damped Angular Frequency: {damped_frequency}\n"
+      f"Damped Period: {damped_period}\n"
       f"Critical Damping: {self.critical_damping():.4f} Ns/m\n"
     )
