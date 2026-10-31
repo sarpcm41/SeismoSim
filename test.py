@@ -1,10 +1,10 @@
-"""Integration tests for SeismoSim.
+"""Integration tests for SeismoSim. pls work
 
 Groups:
   A. Smoke           - every module imports
   B. End to end      - file -> simulation -> spectrum chains, unit chain
   C. Physics         - linearity, superposition, energy, log decrement ...
-  D. Cross-check     - independent Newmark-beta solver, convergence order
+  D. Cross-check     - independent Newmark beta solver, convergence order
   E. Edge cases      - zeta = 0 / 1 / >1, very short periods, bad files
   F. CLI / menu      - input() and plt.show() are mocked
 
