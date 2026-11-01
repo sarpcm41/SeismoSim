@@ -9,9 +9,9 @@ def load_record(path, dt=None, unit="g"):
     """Load a ground acceleration record from a text or a CSV file.
 
     Two layouts are supported:
-      * two columns  -> (time, acceleration); dt is taken from the time
-        column, which must be uniformly spaced.
-      * one column   -> acceleration only; dt must be given.
+      * two columns  -> (time, acceleration) dt is taken from the time
+        column, which must be uniformly and accordingly spaced.
+      * one column   -> acceleration only - dt input must be given. :D
 
     Lines that cannot be read as numbers (headers, comments) are skipped.
     unit is "g" or "m/s2"; the returned acceleration is always in m/s^2.
@@ -37,6 +37,10 @@ def load_record(path, dt=None, unit="g"):
         raise ValueError("Inconsistent number of columns in the record file.")
 
     data = np.array(rows)
+    if not np.all(np.isfinite(data)):
+        raise ValueError(
+            "Record contains NaN or infinite values."
+        )
 
     if n_columns == 1:
         if dt is None:
