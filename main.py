@@ -1,4 +1,3 @@
-
 from model import SDOF
 from simulation import simulate_free_vibration
 from visualization import plot_free_vibration
@@ -8,7 +7,11 @@ import numpy as np
 from simulation import simulate_earthquake
 from ground_motion import load_record
 from spectrum import response_spectrum
-from visualization import plot_earthquake_response, plot_response_spectrum
+from visualization import (
+    plot_earthquake_response,
+    plot_free_vibration,
+    plot_response_spectrum,
+)
 
 
 def main():
