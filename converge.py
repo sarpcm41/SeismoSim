@@ -1,35 +1,11 @@
+"""RK4 convergence study against the closed-form free vibration solution."""
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
+from analytical import free_vibration_displacement
 from model import SDOF
 from simulation import simulate_free_vibration
-
-
-def analytical_displacement(system, time, u0, v0):
-
-    wn = system.natural_angular_frequency()
-    zeta = system.damping_ratio()
-
-    if zeta >= 1:
-        raise ValueError(
-            "Analytical solution currently supports underdamped systems only."
-        )
-
-    wd = system.damped_angular_frequency()
-    alpha = zeta * wn
-
-    B = (v0 + alpha * u0) / wd
-
-    displacement = (
-        np.exp(-alpha * time)
-        * (
-            u0 * np.cos(wd * time)
-            + B * np.sin(wd * time)
-        )
-    )
-
-    return displacement
 
 
 def main():
@@ -81,7 +57,7 @@ def main():
         )
 
         # Analytical solution
-        exact = analytical_displacement(
+        exact = free_vibration_displacement(
             system,
             time,
             u0,
