@@ -15,7 +15,7 @@ Python 3.10 or newer is recommended.
 - pip install -r requirements.txt
 
 ## How to use
-- python main.py
+ python main.py
 Select one of the 3 modes
 - (1) Free vibration: enter mass (kg), stiffness (N/m), damping (Ns/m), then initial conditions and duration.
 - (2) Earthquake response: enter the system, then the path of a ground motion record.
