@@ -49,7 +49,7 @@ The equation of motion m u'' + c u' + k u = -m a_g(t) is integrated with a fourt
 ## Tests
 - python -m unittest -v
 
-The suite checks the solver against closed-form solutions and an independent Newmark-beta implementation, verifies linearity, superposition, energy conservation and the observed convergence order (about 4), and exercises file loading and the menu with mocked input.
+The suite checks the solver against closed form solutions and an independent Newmark beta implementation, verifies linearity, superposition, energy conservation and the observed convergence order (about 4), and exercises file loading and the menu with mocked input.
 
 ## Limitations
 - SDOF, linear elastic systems only
