@@ -5,7 +5,7 @@ Sections:
                           record loading, response spectrum
   2. Smoke              - every module imports
   3. End to end         - file -> simulation -> spectrum chains, unit chain
-  4. Physics            - linearity, superposition, energy, log decrement ...
+  4. Physics            - linearity, superposition, energy, log decrement and more  
   5. Cross-validation   - independent Newmark-beta solver, convergence order
   6. Edge cases         - zeta = 0 / 1 / >1, very short periods, bad files
   7. CLI / menu         - input() and plt.show() are mocked
@@ -54,7 +54,7 @@ def two_column_text(acc, dt, scale=1.0):
 
 
 def newmark_average_acceleration(m, c, k, p, dt, u0=0.0, v0=0.0):
-    """Independent reference solver (Newmark-beta, average acceleration)."""
+    """Independent reference solver (Newmark beta, average acceleration)."""
     beta, gamma = 0.25, 0.5
     n = len(p)
     u = np.zeros(n)
@@ -481,7 +481,7 @@ class TestCrossValidation(unittest.TestCase):
 # 6. EDGE CASES
 # ======================================================================
 class TestEdgeCases(unittest.TestCase):
-
+ 
     def test_all_damping_regimes_stay_finite(self):
         dt = 0.01
         ground, _ = sine_pulse(1.0, 0.5, 5.0, dt)
@@ -494,14 +494,14 @@ class TestEdgeCases(unittest.TestCase):
                 )
                 for arr in (u, v, a_rel, a_abs):
                     self.assertTrue(np.all(np.isfinite(arr)))
-
+ 
     def test_very_short_and_very_long_periods(self):
         dt = 0.01
         ground, _ = sine_pulse(1.0, 0.5, 5.0, dt)
         spec = response_spectrum(ground, dt, [0.01, 0.05, 20.0], 0.05)
         for key in ("Sd", "PSv", "PSa", "Sa_abs"):
             self.assertTrue(np.all(np.isfinite(spec[key])))
-
+ 
     def test_bad_record_files_are_rejected(self):
         cases = {
             "empty": "",
@@ -515,11 +515,23 @@ class TestEdgeCases(unittest.TestCase):
                 path = write_temp(self, text)
                 with self.assertRaises(ValueError):
                     load_record(path)
-
+ 
+    def test_nan_and_inf_values_are_rejected(self):
+        cases = {
+            "nan in two columns": "0.0 0.0\n0.01 nan\n0.02 1.0\n",
+            "inf in two columns": "0.0 0.0\n0.01 inf\n0.02 1.0\n",
+            "nan in single column": "0.0\nnan\n1.0\n",
+        }
+        for name, text in cases.items():
+            with self.subTest(case=name):
+                path = write_temp(self, text)
+                with self.assertRaises(ValueError):
+                    load_record(path, dt=0.01)
+ 
     def test_missing_record_file(self):
         with self.assertRaises(OSError):
             load_record("this_file_does_not_exist.csv")
-
+ 
     def test_long_record_runs_in_reasonable_time(self):
         import time as clock
         dt = 0.01
@@ -531,7 +543,7 @@ class TestEdgeCases(unittest.TestCase):
         self.assertLess(elapsed, 60.0)
 
 
-# ======================================================================
+# =======================================  ===============================
 # 7. CLI / MENU
 # ======================================================================
 class TestMenu(unittest.TestCase):
