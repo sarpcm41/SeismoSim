@@ -1,9 +1,51 @@
+"""Time integration of SDOF systems (classical RK4)."""
 
+import numpy as np
 
 # Largest allowed value of (natural frequency * internal step) for RK4.
 # RK4 is only stable for roughly wn*h < 2.8; staying well below keeps it
 # accurate too, which matters for stiff (short-period) systems.
 MAX_FREQUENCY_STEP_PRODUCT = 0.1
+
+
+def simulate_free_vibration(system, duration, dt, u0, v0):
+    """Free vibration of an SDOF system by classical RK4.
+
+    Returns
+    -------
+    time, displacement, velocity, acceleration  (all 1D arrays)
+    """
+    if duration <= 0 or dt <= 0:
+        raise ValueError("Duration and time step must be positive.")
+
+    n = int(round(duration / dt))
+    if n < 1:
+        raise ValueError("Duration must be at least one time step.")
+
+    c = system.damping / system.mass
+    k = system.stiffness / system.mass
+
+    def deriv(u, v):
+        return v, -c * v - k * u
+
+    time = np.arange(n + 1) * dt
+    u = np.zeros(n + 1)
+    v = np.zeros(n + 1)
+    u[0], v[0] = u0, v0
+
+    for i in range(n):
+        ui, vi = u[i], v[i]
+
+        k1u, k1v = deriv(ui, vi)
+        k2u, k2v = deriv(ui + 0.5 * dt * k1u, vi + 0.5 * dt * k1v)
+        k3u, k3v = deriv(ui + 0.5 * dt * k2u, vi + 0.5 * dt * k2v)
+        k4u, k4v = deriv(ui + dt * k3u, vi + dt * k3v)
+
+        u[i + 1] = ui + (dt / 6) * (k1u + 2 * k2u + 2 * k3u + k4u)
+        v[i + 1] = vi + (dt / 6) * (k1v + 2 * k2v + 2 * k3v + k4v)
+
+    acceleration = -c * v - k * u
+    return time, u, v, acceleration
 
 
 def _rk4_base_excitation(c_over_m, k_over_m, ground_acc, dt, u0, v0, substeps):
