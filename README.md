@@ -2,6 +2,10 @@
 
 SeismoSim is a Python based structural dynamics simulator that models how buildings respond to earthquake ground motion using numerical methods. The project focuses on single degree of freedom (SDOF) systems and lets you see how mass, stiffness and damping affect a structure's dynamic response.
 
+## my comments
+
+so i initially started with eulers method, it was what i knew before actually going in coding more deeply - after researching i got to know that there are more methods to do a lower error for approximation. thats how i learned RK4. i am thinking of improving this model to MDOF, i am AMAZED by initial value problems <3
+
 ## Features
 - Free vibration of an SDOF system (any damping level)
 - Response to a ground acceleration record (time history of relative displacement, relative velocity and absolute acceleration)
